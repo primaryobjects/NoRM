@@ -1,3 +1,9 @@
+*** WHATS NEW ***
+NoRM Fork Changes Jan-6-2012 - KB
+- Fixed bug when using NoRM with MongoLab.com.
+  Added null checks in BsonDeserializer to correctly insert/update documents on MongoLab.
+  
+  
 NoRM is a .Net library for connecting to the document-oriented database, MongoDB.
 =================================================================================
 

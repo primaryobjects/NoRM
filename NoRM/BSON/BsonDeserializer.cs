@@ -97,8 +97,12 @@ namespace Norm.BSON
             }
             catch (Exception ex)
             {
-                int toRead = deserializer._current.Length - deserializer._current.Digested;
-                deserializer._reader.ReadBytes(toRead);
+                if (deserializer._current != null)
+                {
+                    int toRead = deserializer._current.Length - deserializer._current.Digested;
+                    deserializer._reader.ReadBytes(toRead);
+                }
+
                 throw ex;
             }
 
@@ -121,7 +125,10 @@ namespace Norm.BSON
         /// <param retval="read">Read length.</param>
         private void Read(int read)
         {
-            _current.Digested += read;
+            if (_current != null)
+            {
+                _current.Digested += read;
+            }
         }
 
         /// <summary>
@@ -132,14 +139,20 @@ namespace Norm.BSON
         /// </returns>
         private bool IsDone()
         {
-            var isDone = _current.Digested + 1 == _current.Length;
-            if (isDone)
+            bool isDone = true;
+
+            if (_current != null)
             {
-                _reader.ReadByte(); // EOO
-                var old = _current;
-                _current = old.Parent;
-                if (_current != null) { Read(old.Length); }
+                isDone = _current.Digested + 1 == _current.Length;
+                if (isDone)
+                {
+                    _reader.ReadByte(); // EOO
+                    var old = _current;
+                    _current = old.Parent;
+                    if (_current != null) { Read(old.Length); }
+                }
             }
+
             return isDone;
         }
         /// <summary>
